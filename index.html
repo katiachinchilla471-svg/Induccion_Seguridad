@@ -3,184 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inducción de Seguridad - Parque Energético 1</title>
+  <title>Consulta de Inducción - Parque Energético 1</title>
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
       background-color: #f1f5f9;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       min-height: 100vh;
       margin: 0;
       padding: 20px;
     }
     .card {
       background: #ffffff;
-      padding: 32px;
+      padding: 30px;
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      max-width: 440px;
+      max-width: 800px;
       width: 100%;
       text-align: center;
     }
-    .logo-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 6px;
-    }
-    .subtitle {
-      font-size: 14px;
-      color: #64748b;
-      margin-bottom: 24px;
-    }
-    input {
+    h2 { color: #0f172a; margin-bottom: 6px; font-size: 24px; }
+    p.subtitle { color: #64748b; font-size: 14px; margin-bottom: 20px; }
+    .excel-container {
       width: 100%;
-      padding: 14px;
-      border: 2px solid #cbd5e1;
-      border-radius: 10px;
-      font-size: 16px;
-      margin-bottom: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    input:focus {
-      border-color: #2563eb;
-    }
-    button {
-      width: 100%;
-      padding: 14px;
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    button:hover {
-      background-color: #1d4ed8;
-    }
-    .resultado {
-      margin-top: 24px;
-      padding: 20px;
+      height: 480px;
+      border: 1px solid #cbd5e1;
       border-radius: 12px;
-      display: none;
+      overflow: hidden;
+      margin-top: 15px;
     }
-    .aprobado {
-      background-color: #dcfce7;
-      color: #15803d;
-      border: 1px solid #86efac;
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
     }
-    .reprobado {
-      background-color: #fee2e2;
-      color: #b91c1c;
-      border: 1px solid #fca5a5;
-    }
-    .status-text {
-      font-size: 20px;
-      font-weight: 700;
-    }
-    .score-text {
-      font-size: 15px;
-      margin-top: 8px;
-      font-weight: 600;
-    }
-    .info-text {
-      font-size: 12px;
-      color: #94a3b8;
-      margin-top: 20px;
+    .instrucciones {
+      background-color: #eff6ff;
+      color: #1e40af;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 15px;
+      border: 1px solid #bfdbfe;
     }
   </style>
 </head>
 <body>
 
 <div class="card">
-  <div class="logo-title">Parque Energético 1</div>
-  <div class="subtitle">Consulta de Calificación de Inducción de Seguridad</div>
-
-  <input type="text" id="nombreInput" placeholder="Ingresa tu Nombre Completo...">
-  <button onclick="buscarNota()">Consultar Estado</button>
-
-  <div id="resultBox" class="resultado">
-    <div id="statusText" class="status-text"></div>
-    <div id="scoreText" class="score-text"></div>
+  <h2>Parque Energético 1</h2>
+  <p class="subtitle">Consulta de Calificaciones - Inducción de Seguridad Industrial</p>
+  
+  <div class="instrucciones">
+    💡 <strong>Instrucciones:</strong> Revisa tu <strong>Nombre Completo</strong> y tu puntaje en la columna <em>Total de Puntos</em> para verificar si tu estado es Aprobado.
   </div>
 
-  <div class="info-text">
-    Acceso libre para contratistas, practicantes y personal de nuevo ingreso.
+  <div class="excel-container">
+    <iframe width="402" height="346" frameborder="0" scrolling="no" src="https://enersahn-my.sharepoint.com/personal/kchinchilla_enersa-energia_com/_layouts/15/Doc.aspx?sourcedoc={0f4177cd-6bc8-44ec-91b3-dbac56505371}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>
   </div>
 </div>
-
-<script>
-  // Enlace directo al archivo de datos (.csv subido a GitHub o enlace público)
-  const CSV_URL = 'datos.csv'; 
-
-  async function buscarNota() {
-    const inputVal = document.getElementById('nombreInput').value.trim().toLowerCase();
-    const resultBox = document.getElementById('resultBox');
-    const statusText = document.getElementById('statusText');
-    scoreText = document.getElementById('scoreText');
-
-    if (!inputVal) {
-      alert("Por favor ingresa tu nombre completo.");
-      return;
-    }
-
-    try {
-      const response = await fetch(CSV_URL);
-      const csvText = await response.text();
-      
-      const lineas = csvText.split('\n');
-      let registroEncontrado = null;
-
-      // Recorrer de la última respuesta hacia la primera (para obtener la más reciente)
-      for (let i = lineas.length - 1; i >= 1; i--) {
-        const linea = lineas[i];
-        if (!linea) continue;
-
-        if (linea.toLowerCase().includes(inputVal)) {
-          registroEncontrado = linea.split(',');
-          break;
-        }
-      }
-
-      resultBox.style.display = 'block';
-
-      if (registroEncontrado) {
-        // En tu archivo, la columna 'Total de puntos' corresponde al valor numérico
-        let puntos = parseFloat(registroEncontrado[5]); // Columna F (Total de puntos)
-        
-        if (isNaN(puntos)) {
-          // Búsqueda de respaldo por si varían las columnas
-          const numeros = registroEncontrado.map(v => parseFloat(v)).filter(v => !isNaN(v));
-          puntos = numeros.length > 0 ? numeros[0] : 0;
-        }
-
-        scoreText.innerText = Puntaje obtenido: ${puntos} pts;
-
-        // Nota mínima de aprobación (Ajustar según política interna, ej. 7.0 puntos)
-        if (puntos >= 8.0) {
-          resultBox.className = 'resultado aprobado';
-          statusText.innerText = '¡APROBADO!';
-        } else {
-          resultBox.className = 'resultado reprobado';
-          statusText.innerText = 'NO APROBADO';
-        }
-      } else {
-        resultBox.className = 'resultado reprobado';
-        statusText.innerText = 'No se encontraron registros';
-        scoreText.innerText = 'Verifica que hayas escrito tu nombre correctamente.';
-      }
-
-    } catch (error) {
-      alert("Error al consultar la base de datos.");
-      console.error(error);
-    }
-  }
-</script>
 
 </body>
 </html>
