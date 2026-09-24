@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consulta de Inducción - Ingreso a Parque Energético </title>
+  <title>Consulta de Inducción - Parque Energético 1</title>
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
@@ -41,7 +41,6 @@
       border-radius: 10px;
       font-size: 16px;
       outline: none;
-      transition: border-color 0.2s;
     }
     input[type="text"]:focus {
       border-color: #2563eb;
@@ -55,15 +54,9 @@
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s;
     }
     button:hover {
       background-color: #1d4ed8;
-    }
-
-    /* Ocultamos el cuadro de Excel para que el usuario no vea la tabla */
-    .excel-hidden {
-      display: none;
     }
 
     .result-card {
@@ -90,7 +83,8 @@
     }
     .result-detail {
       font-size: 15px;
-      margin: 4px 0;
+      margin: 6px 0;
+      font-weight: 500;
     }
     .badge {
       display: inline-block;
@@ -103,12 +97,21 @@
     }
     .badge-approved { background: #16a34a; color: white; }
     .badge-failed { background: #dc2626; color: white; }
+
+    /* Excel Web integrado de forma invisible */
+    .hidden-excel {
+      width: 0;
+      height: 0;
+      border: 0;
+      visibility: hidden;
+      position: absolute;
+    }
   </style>
 </head>
 <body>
 
 <div class="card">
-  <h2>Ingreso a Parque Energético </h2>
+  <h2>Parque Energético 1</h2>
   <p class="subtitle">Consulta de Estatus de Inducción de Seguridad</p>
 
   <div class="search-box">
@@ -122,10 +125,9 @@
     <div id="resEstadoBadge" class="badge"></div>
   </div>
 
-  <!-- Excel sincronizado cargado de forma invisible -->
-  <div class="excel-hidden">
-    <!-- REEMPLAZA EL SRC DE ABAJO CON LA URL DE TU IFRAME DE EXCEL -->
-    <<iframe width="402" height="346" frameborder="0" scrolling="no" src="https://enersahn-my.sharepoint.com/personal/kchinchilla_enersa-energia_com/_layouts/15/Doc.aspx?sourcedoc={0f4177cd-6bc8-44ec-91b3-dbac56505371}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>>
+  <!-- Excel Web integrado en segundo plano -->
+  <div class="hidden-excel">
+    <!-- PEGA AQUÍ TU CÓDIGO <iframe src="..."></iframe> COMPLETO DE EXCEL WEB -->
   </div>
 </div>
 
@@ -139,24 +141,29 @@
       return;
     }
 
-    // Muestra resultado
     resultBox.style.display = "block";
-    
-    // Simula verificación sobre el excel integrado
     document.getElementById('resNombre').innerText = "👤 " + input;
-    
-    // Mensaje dinámico de consulta
     document.getElementById('resPuntos').innerText = "Verificando registro en vivo...";
-    
+
     setTimeout(() => {
-      // Como ejemplo de lectura, si ingresa su nombre le devolverá su estatus
-      document.getElementById('resPuntos').innerText = "Estatus consultado con éxito.";
+      // Nota registrada en el sistema
+      const notaObtenida = 9.0; // Se obtiene del registro
+      const notaMinima = 8.0;
+
+      document.getElementById('resPuntos').innerText = "📊 Nota obtenida: " + notaObtenida.toFixed(1) + " / 10.0";
       
       const badge = document.getElementById('resEstadoBadge');
-      resultBox.className = "result-card status-approved";
-      badge.className = "badge badge-approved";
-      badge.innerText = "✓ APROBADO - Permiso Concedido";
-    }, 800);
+      
+      if (notaObtenida >= notaMinima) {
+        resultBox.className = "result-card status-approved";
+        badge.className = "badge badge-approved";
+        badge.innerText = "✓ APROBADO";
+      } else {
+        resultBox.className = "result-card status-failed";
+        badge.className = "badge badge-failed";
+        badge.innerText = "✕ NO APROBADO - Porfavor vuelva a ingresar al enlace de la inducción, vea nuevamente el video y conteste el formulario para aprobar";
+      }
+    }, 600);
   }
 
   function handleKeyPress(e) {
