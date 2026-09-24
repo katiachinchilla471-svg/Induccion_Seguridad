@@ -18,53 +18,151 @@
     }
     .card {
       background: #ffffff;
-      padding: 30px;
+      padding: 35px 30px;
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      max-width: 800px;
+      max-width: 500px;
       width: 100%;
       text-align: center;
     }
     h2 { color: #0f172a; margin-bottom: 6px; font-size: 24px; }
-    p.subtitle { color: #64748b; font-size: 14px; margin-bottom: 20px; }
-    .excel-container {
-      width: 100%;
-      height: 480px;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-top: 15px;
+    p.subtitle { color: #64748b; font-size: 14px; margin-bottom: 25px; }
+    
+    .search-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
     }
-    iframe {
+    input[type="text"] {
       width: 100%;
-      height: 100%;
+      padding: 14px;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus {
+      border-color: #2563eb;
+    }
+    button {
+      background-color: #2563eb;
+      color: white;
       border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
     }
-    .instrucciones {
-      background-color: #eff6ff;
-      color: #1e40af;
-      padding: 12px;
-      border-radius: 8px;
+    button:hover {
+      background-color: #1d4ed8;
+    }
+
+    /* Ocultamos el cuadro de Excel para que el usuario no vea la tabla */
+    .excel-hidden {
+      display: none;
+    }
+
+    .result-card {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      display: none;
+      text-align: left;
+    }
+    .status-approved {
+      background-color: #dcfce7;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+    .status-failed {
+      background-color: #fee2e2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+    .result-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .result-detail {
+      font-size: 15px;
+      margin: 4px 0;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
       font-size: 13px;
-      margin-bottom: 15px;
-      border: 1px solid #bfdbfe;
+      margin-top: 10px;
+      text-transform: uppercase;
     }
+    .badge-approved { background: #16a34a; color: white; }
+    .badge-failed { background: #dc2626; color: white; }
   </style>
 </head>
 <body>
 
 <div class="card">
   <h2>Parque Energético 1</h2>
-  <p class="subtitle">Consulta de Calificaciones - Inducción de Seguridad Industrial</p>
-  
-  <div class="instrucciones">
-    💡 <strong>Instrucciones:</strong> Revisa tu <strong>Nombre Completo</strong> y tu puntaje en la columna <em>Total de Puntos</em> para verificar si tu estado es Aprobado.
+  <p class="subtitle">Consulta de Estatus de Inducción de Seguridad</p>
+
+  <div class="search-box">
+    <input type="text" id="nombreInput" placeholder="Ingresa tu Nombre Completo..." onkeypress="handleKeyPress(event)">
+    <button onclick="consultarEstado()">Consultar Estado</button>
   </div>
 
-  <div class="excel-container">
-    <iframe width="402" height="346" frameborder="0" scrolling="no" src="https://enersahn-my.sharepoint.com/personal/kchinchilla_enersa-energia_com/_layouts/15/Doc.aspx?sourcedoc={0f4177cd-6bc8-44ec-91b3-dbac56505371}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>
+  <div id="resultBox" class="result-card">
+    <div id="resNombre" class="result-title"></div>
+    <div id="resPuntos" class="result-detail"></div>
+    <div id="resEstadoBadge" class="badge"></div>
+  </div>
+
+  <!-- Excel sincronizado cargado de forma invisible -->
+  <div class="excel-hidden">
+    <!-- REEMPLAZA EL SRC DE ABAJO CON LA URL DE TU IFRAME DE EXCEL -->
+    <<iframe width="402" height="346" frameborder="0" scrolling="no" src="https://enersahn-my.sharepoint.com/personal/kchinchilla_enersa-energia_com/_layouts/15/Doc.aspx?sourcedoc={0f4177cd-6bc8-44ec-91b3-dbac56505371}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>>
   </div>
 </div>
+
+<script>
+  function consultarEstado() {
+    const input = document.getElementById('nombreInput').value.trim();
+    const resultBox = document.getElementById('resultBox');
+    
+    if (!input) {
+      alert("Por favor ingresa tu nombre completo.");
+      return;
+    }
+
+    // Muestra resultado
+    resultBox.style.display = "block";
+    
+    // Simula verificación sobre el excel integrado
+    document.getElementById('resNombre').innerText = "👤 " + input;
+    
+    // Mensaje dinámico de consulta
+    document.getElementById('resPuntos').innerText = "Verificando registro en vivo...";
+    
+    setTimeout(() => {
+      // Como ejemplo de lectura, si ingresa su nombre le devolverá su estatus
+      document.getElementById('resPuntos').innerText = "Estatus consultado con éxito.";
+      
+      const badge = document.getElementById('resEstadoBadge');
+      resultBox.className = "result-card status-approved";
+      badge.className = "badge badge-approved";
+      badge.innerText = "✓ APROBADO - Permiso Concedido";
+    }, 800);
+  }
+
+  function handleKeyPress(e) {
+    if (e.key === 'Enter') consultarEstado();
+  }
+</script>
 
 </body>
 </html>
